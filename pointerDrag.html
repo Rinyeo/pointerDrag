@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>pointerDrag</title>
+	<style>
+
+	html,
+	body {
+		padding: 0;
+		margin: 0;
+		font-family: 微软雅黑;
+	    overflow: hidden;
+	}
+
+	* {
+		box-sizing: border-box;
+	        -weikit-box-sizing: border-box;
+	}
+
+	/* 按钮样式 */
+	button {
+		background: #21CE84;
+		border: none;
+		cursor: pointer;
+		display: inline-block;
+		width: 70px;
+		height: 26px;
+		color: white;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+		border-radius: 3px;
+		box-shadow: 1px 1px 10px 0px rgba(0, 0, 0, 0.3);
+		transition: all 0.3s ease-in-out;
+		-webkit-transition: all 0.3s ease-in-out;
+		-moz-transition: all 0.3s ease-in-out;
+	}
+
+	button:focus {
+		outline: none;
+	}
+
+	button:hover {
+		background: #13B871;
+	}
+
+	/* 按钮容器部分 */
+	.content {
+		text-align: center;
+		width: 200px;
+		position:absolute;
+		left:50%;
+		top:50%;
+		margin-top: -13px;
+		margin-left: -100px;
+	}
+	.content>p{
+		text-align: center;
+		color: #666;
+		font-size: 13px;
+	}
+	/* login */
+	.login-bg {
+		z-index:3;
+		position: absolute;
+		width: 100%;
+		height: 100vh;
+		background: rgba(255, 255, 255, 0.6);
+		display: none;
+		opacity: 0;
+		-webkit-transition: all .5s ease-out;
+	    transition: all .5s ease-out;
+
+	}
+
+	/* login-box */
+	.login-box {
+		width:280px;
+		height: 300px;
+		background: #fff;
+		position: absolute;
+
+		/* 过渡效果 */
+		opacity: 0;
+		transform: translateY(20px);
+		-webkit-transform: translateY(20px);
+		box-shadow: 1px 1px 15px 0px rgba(0, 0, 0, 0.3);
+		-webkit-transition: opacity .5s ease-out, transform .5s ease-out;
+	    transition: opacity .5s ease-out, transform .5s ease-out;
+	}
+
+	.show .login-box {
+		opacity: 1;
+		-webkit-transform: translateY(0);
+		transform: translateY(0);
+		-webkit-transition: opacity .5s ease-out, transform .5s ease-out;
+	    transition: opacity .5s ease-out, transform .5s ease-out;
+	}
+	.show .login-bg {
+		opacity: 1;
+		-webkit-transition: all .5s ease-out;
+	    transition: all .5s ease-out;
+	}
+	/* title 部分 */
+	.login-title {
+
+		height: 46px;
+		background: #f1f1f1;
+		cursor: move;
+	}
+
+
+	.login-subtitle {
+		position: relative;
+		height: 70px;
+	}
+
+	.login-subtitle>span {
+		position: absolute;
+		display: inline-block;
+		text-align: center;
+		right: 8px;
+		top: -50px;
+		width: 34px;
+		height: 34px;
+		line-height: 32px;
+		border-radius: 50%;
+		font-size: 11px;
+		background: #fff;
+		border: 1px solid #e3e3e3;
+		color: #aaa;
+		cursor: pointer;
+	}
+	.login-subtitle>h2 {
+		margin: 10px 0 0;
+		line-height: 30px;
+		height: 30px;
+		font-weight: normal;
+		font-size: 17px;
+		color: #444;
+		text-align:  center;
+	}
+	.login-subtitle>p {
+		margin: 0 0 10px;
+		text-align:  center;
+		font-size: 12px;
+		color: #888;
+	}
+	/* 输入框部分 */
+	.input-wrapper:first-child {
+		border-top: 1px solid #eee;
+	}
+
+	.input-wrapper {
+		border-bottom: 1px solid #eee;
+	}
+
+	.input {
+	    padding: 15px 8px;
+	    height: 48px;
+        width: 100%;
+        outline: none;
+        border: none;
+        font-size: 14px;
+        color: ;
+	}
+
+	.login-buttom {
+		padding: 15px 8px;
+		text-align: center;
+	}
+
+	.login-buttom button {
+		width: 100%;
+		height: 34px;
+		box-shadow: none;
+	}
+	</style>
+</head>
+<body>
+	<div class="login-bg" id="login">
+		<div class="login-box" id="login-box">
+			<div class="login-title" id="login-title">
+
+			</div>
+
+			<div class="login-subtitle">
+			<span id="close">关闭</span>
+				<h2>登录逗乎</h2>
+				<p>与世界分享你的逗逼、搞笑和段子</p>
+			</div>
+			<!-- login -->
+			<div class="login-content">
+
+				<!-- input -->
+				<div class="input-wrapper">
+					<input class="input" type="text" placeholder="手机号或邮箱" required>
+				</div>
+
+				<!-- password -->
+				<div class="input-wrapper">
+					<input class="input" type="password" placeholder="密码" required>
+				</div>
+
+				<!-- login-btn -->
+				<div class="login-buttom">
+					<button>登录</button>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- content -->
+	<div class="content">
+		<button id="login-btn">登录</button>
+		<button id="login-btn2">注册</button>
+		<p>仿知乎登录框，原生js拖拽练习</p>
+	</div>
+	<script>
+	 var login = document.getElementById('login');
+
+	 var close = document.getElementById('close');
+
+	 var loginBtn = document.getElementById('login-btn');
+
+	 var loginBtn2 = document.getElementById('login-btn2');
+
+	 var loginBox = document.getElementById('login-box');
+
+	 var loginTit = document.getElementById('login-title');
+
+	 var W = 0;
+	 var H = 0;
+
+	 var boxW = 0;
+	 var boxH = 0;
+
+	 var flag = true;
+
+	 var ponintOffsetX = 0;
+	 var ponintOffsetY = 0;
+
+
+	 loginBtn2.onclick = loginBtn.onclick = function () {
+
+	 	login.style.display = 'block';
+
+	 	W = document.documentElement.clientWidth;
+	    H = document.documentElement.clientHeight;
+
+	 	boxW = loginBox.offsetWidth;
+	 	boxH = loginBox.offsetHeight;
+
+	 	loginBox.style.left = (W - boxW) / 2 + 'px';
+	 	loginBox.style.top = (H -boxH) / 2 + 'px';
+
+	 	setTimeout(function() {
+
+		 	document.body.className = "show";
+
+	 	}, 100);
+	 }
+
+	 window.onresize = function () {
+	 	if (flag) {
+
+		 	W = document.documentElement.clientWidth;
+		    H = document.documentElement.clientHeight;
+
+		 	loginBox.style.left = (W - boxW) / 2 + 'px';
+		 	loginBox.style.top = (H -boxH) / 2 + 'px';
+	 	}
+	 }
+
+	 close.onclick = function () {
+
+	 	flag = true;
+
+	 	console.log(flag);
+
+	 	document.body.className = "";
+
+	 	setTimeout(function () {
+
+		 	login.style.display = 'none';
+
+	 	}, 500);
+
+	 }
+
+
+	 loginTit.onmousedown = function (e) {
+
+	 	flag = false;
+
+	 	var e = e || window.event;
+
+	 	ponintOffsetX = e.clientX - loginBox.offsetLeft;
+	 	ponintOffsetY = e.clientY - loginBox.offsetTop;
+
+
+	 	document.onmousemove = function (e) {
+
+	 		var e = e || window.event;
+
+	 		var mouseX = e.clientX - ponintOffsetX;
+	 		var mouseY = e.clientY - ponintOffsetY;
+
+	 		if (mouseX < 15) {
+	 			mouseX = 0;
+	 		}
+
+	 		if (mouseX > W - boxW - 15) {
+	 			mouseX = W - boxW;
+	 		}
+
+	 		if (mouseY < 15) {
+	 			mouseY = 0;
+	 		}
+
+	 		if (mouseY > H - boxH - 15) {
+	 			mouseY = H - boxH;
+	 		}
+
+	 		loginBox.style.left = mouseX + 'px';
+	 		loginBox.style.top = mouseY + 'px';
+
+	 		return false;
+
+
+	 		// loginBox.style.top = mouseY  + 'px';
+
+	 	}
+	 	// 鼠标松开事件
+	 	document.onmouseup = function (e) {
+
+	 		document.onmousemove = null;
+	 	}
+	 }
+	</script>
+</body>
+</html>
