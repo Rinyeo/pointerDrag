@@ -24,12 +24,15 @@
 		border: none;
 		cursor: pointer;
 		display: inline-block;
-		width: 70px;
-		height: 26px;
+		width: 90px;
+		height: 36px;
 		color: white;
+		font-family: inherit;
+		font-size: 15px;
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 		border-radius: 3px;
+		margin: 0 5px;
 		box-shadow: 1px 1px 10px 0px rgba(0, 0, 0, 0.3);
 		transition: all 0.3s ease-in-out;
 		-webkit-transition: all 0.3s ease-in-out;
@@ -47,17 +50,18 @@
 	/* 按钮容器部分 */
 	.content {
 		text-align: center;
-		width: 200px;
+		width: 280px;
 		position:absolute;
 		left:50%;
 		top:50%;
-		margin-top: -13px;
-		margin-left: -100px;
+		margin-top: -70px;
+		margin-left: -140px;
 	}
 	.content>p{
 		text-align: center;
 		color: #666;
-		font-size: 13px;
+		font-size: 20px;
+		font-weight: bold;
 	}
 	/* login */
 	.login-bg {
@@ -213,9 +217,9 @@
 
 	<!-- content -->
 	<div class="content">
+		<p>仿知乎登录框，原生js拖拽练习</p>
 		<button id="login-btn">登录</button>
 		<button id="login-btn2">注册</button>
-		<p>仿知乎登录框，原生js拖拽练习</p>
 	</div>
 	<script>
 	 var login = document.getElementById('login');
